@@ -1,46 +1,51 @@
-a = input("Enter cells: ")
-lista = list(a)
+def imprimir_tablero(tablero):
+    for fila in tablero:
+        print(" | ".join(fila))
+        print("-" * 9)
 
-def matrix():
-    p = 9 * "-"
-    print(p)
-    print("|", lista[0], lista[1], lista[2], "|")
-    print("|", lista[3], lista[4], lista[5], "|")
-    print("|", lista[6], lista[7], lista[8], "|")
-    print(p)
-
-matrix()
-
-def who_wins():
+def verificar_victoria(tablero, jugador):
+    # Verificar filas y columnas
+    for i in range(3):
+        if all(tablero[i][j] == jugador for j in range(3)):
+            return True
+        if all(tablero[j][i] == jugador for j in range(3)):
+            return True
     
+    # Verificar diagonales
+    if all(tablero[i][i] == jugador for i in range(3)) or \
+       all(tablero[i][2 - i] == jugador for i in range(3)):
+        return True
+    
+    return False
+
+def juego_gato():
+    tablero = [[" " for _ in range(3)] for _ in range(3)]
+    jugador_actual = "X"
+    jugadas = 0
+
     while True:
-        
-        if lista[0] == lista[1] == lista[2] != " " and not lista[3] == lista[4] == lista[5] and not lista[6] == lista[7] == lista[8]:
-            print(lista[0], "wins")
-            break
-        elif lista[3] == lista[4] == lista[5] != " " and not lista[0] == lista[1] == lista[2] and not lista[6] == lista[7] == lista[8]:
-            print(lista[3], "wins")
-            break
-        elif lista[6] == lista[7] == lista[8] != " " and not lista[0] == lista[1] == lista[2] and not lista[3] == lista[4] == lista[5]:
-            print(lista[6], "wins")
-            break
-        elif lista[0] == lista[3] == lista[6] != " " and not lista[1] == lista[4] == lista[7] and not lista[2] == lista[5] == lista[8]:
-            print(lista[0], "wins")
-            break
-        elif lista[1] == lista[4] == lista[7] != " " and not lista[0] == lista[3] == lista[6] and not lista[2] == lista[5] == lista[8]:
-            print(lista[1], "wins")
-            break
-        elif lista[2] == lista[5] == lista[8] != " " and not lista[0] == lista[3] == lista[6] and not lista[1] == lista[4] == lista[7]:
-            print(lista[2], "wins")
-            break
-        elif lista[0] == lista[4] == lista[8] != " ":
-            print(lista[0], "wins")
-            break
-        elif lista[2] == lista[4] == lista[6] != " ":
-            print(lista[2], "wins")
-            break
-        elif " " in lista:
-            continue #??????????!!!!!!!!!!!
+        imprimir_tablero(tablero)
+        fila = int(input(f"Jugador {jugador_actual}, elige una fila (0, 1, 2): "))
+        columna = int(input(f"Jugador {jugador_actual}, elige una columna (0, 1, 2): "))
+
+        if tablero[fila][columna] == " ":
+            tablero[fila][columna] = jugador_actual
+            jugadas += 1
         else:
-            print("Draw")
+            print("Esa casilla ya está ocupada. Inténtalo de nuevo.")
+            continue
+
+        if verificar_victoria(tablero, jugador_actual):
+            imprimir_tablero(tablero)
+            print(f"¡Jugador {jugador_actual} ha ganado!")
             break
+        elif jugadas == 9:
+            imprimir_tablero(tablero)
+            print("¡Empate!")
+            break
+
+        jugador_actual = "O" if jugador_actual == "X" else "X"
+
+if __name__ == "__main__":
+    juego_gato()
+
